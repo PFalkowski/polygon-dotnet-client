@@ -1,14 +1,14 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using MarketDataProvider.Contracts.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.AutoMock;
 using Moq.Protected;
 using Polygon.Client.Interfaces;
-using Polygon.Clients.Contracts.Requests;
-using Polygon.Clients.Contracts.Responses;
+using Polygon.Client.Models;
+using Polygon.Client.Requests;
+using Polygon.Client.Responses;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -36,14 +36,17 @@ namespace MarketDataProvider.Clients.UnitTests
 
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
-            _autoMocker.GetMock<IHttpClientFactory>()
-                .Setup(method => method.CreateClient(It.IsAny<string>()))
-                .Returns(new HttpClient(_handler.Object)
-                {
-                    BaseAddress = new Uri("https://localhost/")
-                });
+            var client = new HttpClient(_handler.Object)
+            {
+                BaseAddress = new Uri("https://localhost/")
+            };
 
-            _classUnderTest = new PolygonClient(_autoMocker.GetMock<IHttpClientFactory>().Object, new Logger<PolygonClient>(loggerFactory));
+
+            //_autoMocker.GetMock<IHttpClientFactory>()
+            //.Setup(method => method.CreateClient(It.IsAny<string>()))
+            //.Returns();
+
+            _classUnderTest = new PolygonClient(client, new Logger<PolygonClient>(loggerFactory));
         }
 
         #region GetAggregateAsync
@@ -63,7 +66,7 @@ namespace MarketDataProvider.Clients.UnitTests
                 });
 
             // Act
-            var response = await _classUnderTest.GetAggregateAsync(request);
+            var response = await _classUnderTest.GetAggregatesAsync(request);
 
             // Assert
             response.Should().NotBeNull();
@@ -85,11 +88,11 @@ namespace MarketDataProvider.Clients.UnitTests
                 });
 
             // Act
-            var response = await _classUnderTest.GetAggregateAsync(request);
+            var response = await _classUnderTest.GetAggregatesAsync(request);
 
             // Assert
             response.Should().NotBeNull();
-            response.Status.Should().Be("BadRequest");
+            response.Status.Should().Be(HttpStatusCode.BadRequest);
             response.Ticker.Should().Be(request.Ticker);
             response.Results.Should().BeEmpty();
             response.ResultsCount.Should().Be(0);
@@ -112,11 +115,11 @@ namespace MarketDataProvider.Clients.UnitTests
                 });
 
             // Act
-            var response = await _classUnderTest.GetAggregateAsync(request);
+            var response = await _classUnderTest.GetAggregatesAsync(request);
 
             // Assert
             response.Should().NotBeNull();
-            response.Status.Should().Be("BadRequest");
+            response.Status.Should().Be(HttpStatusCode.BadRequest);
             response.Ticker.Should().BeNull();
             response.Results.Should().BeEmpty();
             response.ResultsCount.Should().Be(0);
@@ -139,11 +142,11 @@ namespace MarketDataProvider.Clients.UnitTests
                 });
 
             // Act
-            var response = await _classUnderTest.GetAggregateAsync(request);
+            var response = await _classUnderTest.GetAggregatesAsync(request);
 
             // Assert
             response.Should().NotBeNull();
-            response.Status.Should().Be("BadRequest");
+            response.Status.Should().Be(HttpStatusCode.BadRequest);
             response.Ticker.Should().Be(request.Ticker);
             response.Results.Should().BeEmpty();
             response.ResultsCount.Should().Be(0);
@@ -166,11 +169,11 @@ namespace MarketDataProvider.Clients.UnitTests
                 });
 
             // Act
-            var response = await _classUnderTest.GetAggregateAsync(request);
+            var response = await _classUnderTest.GetAggregatesAsync(request);
 
             // Assert
             response.Should().NotBeNull();
-            response.Status.Should().Be("BadRequest");
+            response.Status.Should().Be(HttpStatusCode.BadRequest);
             response.Ticker.Should().Be(request.Ticker);
             response.Results.Should().BeEmpty();
             response.ResultsCount.Should().Be(0);
@@ -181,8 +184,8 @@ namespace MarketDataProvider.Clients.UnitTests
         {
             // Arrange
             var request = GivenValidPolygonAggregateRequest();
-            request.From = DateTimeOffset.Now.AddDays(1).ToUnixTimeMilliseconds();
-            request.To = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            request.From = DateTimeOffset.Now.AddDays(1).ToUnixTimeMilliseconds().ToString();
+            request.To = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
             var json = GivenValidPolygonAggregateResponse();
 
             _handler.Protected()
@@ -194,11 +197,11 @@ namespace MarketDataProvider.Clients.UnitTests
                 });
 
             // Act
-            var response = await _classUnderTest.GetAggregateAsync(request);
+            var response = await _classUnderTest.GetAggregatesAsync(request);
 
             // Assert
             response.Should().NotBeNull();
-            response.Status.Should().Be("BadRequest");
+            response.Status.Should().Be(HttpStatusCode.BadRequest);
             response.Ticker.Should().Be(request.Ticker);
             response.Results.Should().BeEmpty();
             response.ResultsCount.Should().Be(0);
@@ -219,11 +222,11 @@ namespace MarketDataProvider.Clients.UnitTests
                 });
 
             // Act
-            var response = await _classUnderTest.GetAggregateAsync(request);
+            var response = await _classUnderTest.GetAggregatesAsync(request);
 
             // Assert
             response.Should().NotBeNull();
-            response.Status.Should().Be("InternalServerError");
+            response.Status.Should().Be(HttpStatusCode.InternalServerError);
             response.Ticker.Should().Be(request.Ticker);
             response.Results.Should().BeEmpty();
             response.ResultsCount.Should().Be(0);
@@ -246,8 +249,8 @@ namespace MarketDataProvider.Clients.UnitTests
                 Ticker = "MARA",
                 Multiplier = 1,
                 Timespan = "minute",
-                From = fromMilliseconds,
-                To = toMilliseconds
+                From = fromMilliseconds.ToString(),
+                To = toMilliseconds.ToString()
             };
 
             var client = new HttpClient
@@ -261,11 +264,11 @@ namespace MarketDataProvider.Clients.UnitTests
                 .Returns(client);
 
             // Act
-            var response = await _classUnderTest.GetAggregateAsync(request);
+            var response = await _classUnderTest.GetAggregatesAsync(request);
 
             // Assert
             response.Should().NotBeNull();
-            response.Status.Should().Be("OK");
+            response.Status.Should().Be(HttpStatusCode.OK);
 
             var firstTimestamp = response.Results.First().Timestamp;
             var lastTimestamp = response.Results.Last().Timestamp;
@@ -281,10 +284,10 @@ namespace MarketDataProvider.Clients.UnitTests
 
             var offset = (long)DateTimeOffset.Now.Offset.TotalSeconds;
 
-            var convertedCandles = new List<Candle>();
+            var convertedCandles = new List<Bar>();
             foreach (var candle in response.Results)
             {
-                convertedCandles.Add(new Candle
+                convertedCandles.Add(new Bar
                 {
                     Timestamp = candle.Timestamp / 1000 + offset
                 });
@@ -384,11 +387,11 @@ namespace MarketDataProvider.Clients.UnitTests
                 });
 
             // Act
-            var response = await _classUnderTest.GetAllTickers();
+            var response = await _classUnderTest.GetTickersAsync(new PolygonGetTickersRequest());
 
             // Assert
             response.Should().NotBeNull();
-            response.Should().NotBeNullOrEmpty();
+            response.Results.Should().NotBeNullOrEmpty();
         }
 
         [Fact]
@@ -406,11 +409,11 @@ namespace MarketDataProvider.Clients.UnitTests
                 });
 
             // Act
-            var response = await _classUnderTest.GetAllTickers();
+            var response = await _classUnderTest.GetTickersAsync(new PolygonGetTickersRequest());
 
             // Assert
             response.Should().NotBeNull();
-            response.Should().BeEmpty();
+            response.Results.Should().BeEmpty();
         }
 
         [Fact]
@@ -428,11 +431,11 @@ namespace MarketDataProvider.Clients.UnitTests
                 });
 
             // Act
-            var response = await _classUnderTest.GetAllTickers();
+            var response = await _classUnderTest.GetTickersAsync(new PolygonGetTickersRequest());
 
             // Assert
             response.Should().NotBeNull();
-            response.Should().BeEmpty();
+            response.Results.Should().BeEmpty();
         }
         #endregion
        
@@ -443,8 +446,8 @@ namespace MarketDataProvider.Clients.UnitTests
                 Ticker = "META",
                 Multiplier = 1,
                 Timespan = "minute",
-                From = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
-                To = DateTimeOffset.Now.AddDays(1).ToUnixTimeMilliseconds(),
+                From = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString(),
+                To = DateTimeOffset.Now.AddDays(1).ToUnixTimeMilliseconds().ToString(),
             };
 
             return request;
