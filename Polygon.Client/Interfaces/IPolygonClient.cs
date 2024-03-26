@@ -1,10 +1,6 @@
-﻿using MarketDataProvider.Contracts.Models;
-using Polygon.Client.Contracts.Requests;
-using Polygon.Client.Contracts.Responses;
-using Polygon.Clients.Contracts.Requests;
-using Polygon.Clients.Contracts.Responses;
+﻿using Polygon.Client.Requests;
+using Polygon.Client.Responses;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Polygon.Client.Interfaces

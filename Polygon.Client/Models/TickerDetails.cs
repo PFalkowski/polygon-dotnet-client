@@ -1,8 +1,7 @@
-﻿using Polygon.Client.Contracts.Models;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace MarketDataProvider.Contracts.Models
+namespace Polygon.Client.Models
 {
     [ExcludeFromCodeCoverage]
     public class TickerDetails
@@ -30,7 +29,7 @@ namespace MarketDataProvider.Contracts.Models
         /// </summary>
         [JsonPropertyName("market")]
         public string Market { get; set; }
-        
+
         /// <summary>
         /// The most recent close price of the ticker multiplied by weighted outstanding shares.
         /// </summary>

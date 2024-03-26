@@ -1,10 +1,10 @@
-﻿using Polygon.Client.Contracts.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json.Serialization;
+using Polygon.Client.Models;
 
-namespace Polygon.Clients.Contracts.Responses
+namespace Polygon.Client.Responses
 {
     [ExcludeFromCodeCoverage]
     public class PolygonAggregateResponse

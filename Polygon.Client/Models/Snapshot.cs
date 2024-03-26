@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace Polygon.Client.Contracts.Models
+namespace Polygon.Client.Models
 {
     /// <summary>
     /// API Reference: https://polygon.io/docs/stocks/get_v2_snapshot_locale_us_markets_stocks_tickers

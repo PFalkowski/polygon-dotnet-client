@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace Polygon.Client.Contracts.Models
+namespace Polygon.Client.Models
 {
     [ExcludeFromCodeCoverage]
     public class Bar

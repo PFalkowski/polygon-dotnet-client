@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Polygon.Clients.Contracts.Requests
+namespace Polygon.Client.Requests
 {
     [ExcludeFromCodeCoverage]
     public class PolygonAggregateRequest

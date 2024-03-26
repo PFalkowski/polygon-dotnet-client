@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace Polygon.Client.Contracts.Requests
+namespace Polygon.Client.Requests
 {
     /// <summary>
     /// API Reference: https://polygon.io/docs/stocks/get_v3_reference_tickers

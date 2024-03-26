@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
-namespace Polygon.Clients.Contracts.Requests
+namespace Polygon.Client.Requests
 {
     [ExcludeFromCodeCoverage]
     public class WebsocketRequest

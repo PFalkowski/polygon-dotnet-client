@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json.Serialization;
-using MarketDataProvider.Contracts.Models;
+using Polygon.Client.Models;
 
-namespace Polygon.Clients.Contracts.Responses
+namespace Polygon.Client.Responses
 {
     [ExcludeFromCodeCoverage]
     public class PolygonTickerDetailsResponse
