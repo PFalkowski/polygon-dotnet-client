@@ -9,6 +9,7 @@ using MarketDataProvider.Contracts.Models;
 using Microsoft.Extensions.Logging;
 using Polygon.Client.Contracts.Models;
 using Polygon.Client.Contracts.Requests;
+using Polygon.Client.Contracts.Responses;
 using Polygon.Client.Interfaces;
 using Polygon.Clients.Contracts.Requests;
 using Polygon.Clients.Contracts.Responses;
@@ -103,13 +104,16 @@ namespace MarketDataProvider.Clients
             }
         }
 
-        public async Task<IEnumerable<TickerDetails>> GetTickersAsync(PolygonGetTickersRequest request)
+        public async Task<PolygonGetTickersResponse> GetTickersAsync(PolygonGetTickersRequest request)
         {
             try
             {
                 var tickerList = new List<TickerDetails>();
                 var tickerUrl = $"/v3/reference/tickers" +
-                    $"?ticker={request.Ticker}&type=CS&market=stocks&exchange={}&cusipactive=true&limit=1000";
+                    $"?ticker={request.Ticker}&type={request.Type}&market={request.Market}" +
+                    $"&exchange={request.Exchange}&cusip={request.Cusip}&cik={request.Cik}" +
+                    $"&date={request.Date}&saerch={request.Search}&active={request.Active}" +
+                    $"&order={request.Order}&limit={request.Limit}&sort={request.Sort}";
 
                 while (tickerUrl != null)
                 {
@@ -121,19 +125,41 @@ namespace MarketDataProvider.Clients
                     }
 
                     var content = await response.Content.ReadAsStringAsync();
-                    var scanResponse = JsonSerializer.Deserialize<PolygonTickerDetailsResponse>(content);
-                    tickerList.AddRange(scanResponse.TickerDetails);
+                    var scanResponse = JsonSerializer.Deserialize<PolygonGetTickersResponse>(content);
+                    tickerList.AddRange(scanResponse.Results);
+
+                    if (tickerList.Count >= request.Limit)
+                    {
+                        return new PolygonGetTickersResponse
+                        {
+                            Results = tickerList.Take(request.Limit),
+                            Status = HttpStatusCode.OK
+                        };
+                    }
 
                     tickerUrl = scanResponse.NextUrl;
                 }
 
-                return tickerList;
+                return new PolygonGetTickersResponse
+                {
+                    Status = HttpStatusCode.OK,
+                    Results = tickerList
+                };
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error getting tickers from Polygon API: {ex.Message}");
-                return Enumerable.Empty<TickerDetails>();
+                return new PolygonGetTickersResponse
+                {
+                    Status = HttpStatusCode.InternalServerError,
+                    Results = Enumerable.Empty<TickerDetails>()
+                };
             }
+        }
+
+        public Task<PolygonSnapshotResponse> GetAllTickersSnapshot(string tickers, bool includeOtc)
+        {
+            throw new NotImplementedException();
         }
 
         #region Private Methods
@@ -142,7 +168,7 @@ namespace MarketDataProvider.Clients
             return new PolygonAggregateResponse
             {
                 Ticker = ticker,
-                Status = status.ToString(),
+                Status = status,
                 Results = Enumerable.Empty<Bar>(),
                 ResultsCount = 0
             };

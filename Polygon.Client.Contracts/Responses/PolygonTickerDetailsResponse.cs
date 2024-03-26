@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text.Json.Serialization;
 using MarketDataProvider.Contracts.Models;
 
@@ -29,6 +30,6 @@ namespace Polygon.Clients.Contracts.Responses
         /// The status of this request's response.
         /// </summary>
         [JsonPropertyName("status")]
-        public string Status { get; set; }
+        public HttpStatusCode Status { get; set; }
     }
 }
