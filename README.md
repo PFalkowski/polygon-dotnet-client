@@ -61,7 +61,7 @@ public class SomeClass
         var response = await _polygonClient.GetAggregatesAsync(request);
 
         return response;
-	}
+    }
 }
 ```
 
