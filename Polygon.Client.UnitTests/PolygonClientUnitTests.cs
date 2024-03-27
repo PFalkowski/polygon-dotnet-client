@@ -46,31 +46,23 @@ namespace MarketDataProvider.Clients.UnitTests
             _testHarness = serviceProvider.GetRequiredService<TestService>();
         }
 
-        #region GetAggregateAsync
+        #region GetAggregatesAsync
         [Fact]
-        public async Task GetAggregateAsync_With_OK_Response_Returns_Aggregate()
+        public async Task GetAggregatesAsync_With_OK_Response_Returns_Aggregate()
         {
             // Arrange
             var request = GivenValidPolygonAggregateRequest();
-            var json = GivenValidPolygonAggregateResponse();
-
-            //_handler.Protected()
-            //    .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-            //    .ReturnsAsync(new HttpResponseMessage
-            //    {
-            //        StatusCode = HttpStatusCode.OK,
-            //        Content = new StringContent(json)
-            //    });
 
             // Act
             var response = await _testHarness.PolygonClient.GetAggregatesAsync(request);
 
             // Assert
             response.Should().NotBeNull();
+            response.Status.Should().Be(HttpStatusCode.OK);
         }
 
         [Fact]
-        public async Task GetAggregateAsync_With_BadRequest_Response_Returns_EmptyResponse()
+        public async Task GetAggregatesAsync_With_BadRequest_Response_Returns_EmptyResponse()
         {
             // Arrange
             var request = GivenValidPolygonAggregateRequest();
@@ -96,7 +88,7 @@ namespace MarketDataProvider.Clients.UnitTests
         }
 
         [Fact]
-        public async Task GetAggregateAsync_With_No_Ticker_Returns_EmptyResponse()
+        public async Task GetAggregatesAsync_With_No_Ticker_Returns_EmptyResponse()
         {
             // Arrange
             var request = GivenValidPolygonAggregateRequest();
@@ -123,7 +115,7 @@ namespace MarketDataProvider.Clients.UnitTests
         }
 
         [Fact]
-        public async Task GetAggregateAsync_With_No_TimeSpan_Returns_EmptyResponse()
+        public async Task GetAggregatesAsync_With_No_TimeSpan_Returns_EmptyResponse()
         {
             // Arrange
             var request = GivenValidPolygonAggregateRequest();
@@ -150,7 +142,7 @@ namespace MarketDataProvider.Clients.UnitTests
         }
 
         [Fact]
-        public async Task GetAggregateAsync_With_Bad_Multiplier_Returns_EmptyResponse()
+        public async Task GetAggregatesAsync_With_Bad_Multiplier_Returns_EmptyResponse()
         {
             // Arrange
             var request = GivenValidPolygonAggregateRequest();
@@ -177,7 +169,7 @@ namespace MarketDataProvider.Clients.UnitTests
         }
 
         [Fact]
-        public async Task GetAggregateAsync_With_Bad_Date_Returns_EmptyResponse()
+        public async Task GetAggregatesAsync_With_Bad_Date_Returns_EmptyResponse()
         {
             // Arrange
             var request = GivenValidPolygonAggregateRequest();
@@ -205,7 +197,7 @@ namespace MarketDataProvider.Clients.UnitTests
         }
 
         [Fact]
-        public async Task GetAggregateAsync_Throws_Exception_Returns_EmptyResponse()
+        public async Task GetAggregatesAsync_Throws_Exception_Returns_EmptyResponse()
         {
             // Arrange
             var request = GivenValidPolygonAggregateRequest();
@@ -230,7 +222,7 @@ namespace MarketDataProvider.Clients.UnitTests
         }
 
         //[Fact]
-        public async Task GetAggregateAsync_Returns_Correct_Timestamps()
+        public async Task GetAggregatesAsync_Returns_Correct_Timestamps()
         {
             var from = new DateTimeOffset(2024, 3, 5, 10, 0, 0, DateTimeOffset.Now.Offset);
             var to = new DateTimeOffset(2024, 3, 5, 14, 0, 0, DateTimeOffset.Now.Offset);
