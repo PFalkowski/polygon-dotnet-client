@@ -31,14 +31,15 @@ public class SomeClass
 {
 	private readonly IPolygonClient _polygonClient;
 
-	public SomeClass(IPolygonClient polygonApi)
+	public SomeClass(IPolygonClient polygonClient)
 	{
-		_polygonClient = polygonApi;
+		_polygonClient = polygonClient;
 	}
 
 	public async Task<PolygonAggregateResponse> DoSomething()
 	{
         // This will get all of the 1-minute bars for 2024-04-20
+        
         var request = new PolygonAggregatesRequest
         {
             Ticker = "SPY",
@@ -47,8 +48,8 @@ public class SomeClass
             From = "2024-04-20",
             To = "2024-04-20"
         };
-
-		var response = await _polygonClient.GetAggregatesAsync(request);
+        
+        var response = await _polygonClient.GetAggregatesAsync(request);
 
         return response;
 	}
