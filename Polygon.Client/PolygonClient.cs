@@ -12,7 +12,7 @@ using Polygon.Client.Models;
 using Polygon.Client.Requests;
 using Polygon.Client.Responses;
 
-namespace MarketDataProvider.Clients
+namespace Polygon.Client
 {
     public class PolygonClient : IPolygonClient
     {
