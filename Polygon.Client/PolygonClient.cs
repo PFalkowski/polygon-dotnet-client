@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -23,10 +24,21 @@ namespace MarketDataProvider.Clients
             _client = client;
             _logger = logger;
         }
-
+        
         public PolygonClient(HttpClient client)
         {
             _client = client;
+            var loggerFactory = new LoggerFactory();
+            _logger = loggerFactory.CreateLogger<PolygonClient>();
+        }
+
+        public PolygonClient(string bearerToken)
+        {
+            _client = new HttpClient
+            {
+                BaseAddress = new Uri("https://api.polygon.io"),
+            };
+            _client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(bearerToken);
             var loggerFactory = new LoggerFactory();
             _logger = loggerFactory.CreateLogger<PolygonClient>();
         }
