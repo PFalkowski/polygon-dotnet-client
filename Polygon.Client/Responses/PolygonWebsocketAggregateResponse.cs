@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace Polygon.Client.Responses
 {
     [ExcludeFromCodeCoverage]
-    public class WebsocketAggregateResponse
+    public class PolygonWebsocketAggregateResponse
     {
         [JsonPropertyName("status")]
         public string Status { get; set; }

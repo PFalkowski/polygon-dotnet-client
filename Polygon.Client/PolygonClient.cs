@@ -3,30 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Polygon.Client.Interfaces;
 using Polygon.Client.Models;
 using Polygon.Client.Requests;
 using Polygon.Client.Responses;
 
-namespace MarketDataProvider.Clients
+namespace Polygon.Client
 {
     public class PolygonClient : IPolygonClient
     {
         private readonly HttpClient _client;
         private readonly ILogger<PolygonClient> _logger;
 
-        public PolygonClient(HttpClient client, ILogger<PolygonClient> logger)
+        [ActivatorUtilitiesConstructor]
+        public PolygonClient(HttpClient client, ILogger<PolygonClient> logger) 
         {
             _client = client;
             _logger = logger;
         }
 
-        public PolygonClient(HttpClient client)
+        public PolygonClient(string bearerToken)
         {
-            _client = client;
+            _client = new HttpClient
+            {
+                BaseAddress = new Uri("https://api.polygon.io"),
+            };
+            _client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(bearerToken);
             var loggerFactory = new LoggerFactory();
             _logger = loggerFactory.CreateLogger<PolygonClient>();
         }

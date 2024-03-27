@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace Polygon.Client.Requests
 {
     [ExcludeFromCodeCoverage]
-    public class WebsocketRequest
+    public class PolygonWebsocketRequest
     {
         [JsonPropertyName("action")]
         public string Action { get; set; }
