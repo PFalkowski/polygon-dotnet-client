@@ -38,15 +38,15 @@ services.AddPolygonClient("API KEY GOES HERE");
 ```c#
 public class SomeClass
 {
-	private readonly IPolygonClient _polygonClient;
+    private readonly IPolygonClient _polygonClient;
 
-	public SomeClass(IPolygonClient polygonClient)
-	{
-		_polygonClient = polygonClient;
-	}
+    public SomeClass(IPolygonClient polygonClient)
+    {
+        _polygonClient = polygonClient;
+    }
 
-	public async Task<PolygonAggregateResponse> DoSomething()
-	{
+    public async Task<PolygonAggregateResponse> DoSomething()
+    {
         // This will get all of the 1-minute bars for 2024-04-20
 
         var request = new PolygonAggregatesRequest
