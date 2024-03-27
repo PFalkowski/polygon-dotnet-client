@@ -6,10 +6,12 @@ using Moq;
 using Moq.AutoMock;
 using Moq.Protected;
 using Polygon.Client;
+using Polygon.Client.DependencyInjection;
 using Polygon.Client.Interfaces;
 using Polygon.Client.Models;
 using Polygon.Client.Requests;
 using Polygon.Client.Responses;
+using Polygon.Client.UnitTests;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -23,6 +25,7 @@ namespace MarketDataProvider.Clients.UnitTests
         private readonly AutoMocker _autoMocker;
         private readonly Mock<HttpMessageHandler> _handler;
         private readonly IPolygonClient _classUnderTest;
+        private readonly TestService _testHarness;
 
         public PolygonClientUnitTests()
         {
@@ -32,22 +35,15 @@ namespace MarketDataProvider.Clients.UnitTests
             _handler = new Mock<HttpMessageHandler>();
 
             var serviceProvider = new ServiceCollection()
+                .AddPolygonClient("asdf")
+                .AddSingleton<TestService>()
                 .AddLogging()
+
                 .BuildServiceProvider();
 
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
-            var client = new HttpClient(_handler.Object)
-            {
-                BaseAddress = new Uri("https://localhost/")
-            };
-
-
-            //_autoMocker.GetMock<IHttpClientFactory>()
-            //.Setup(method => method.CreateClient(It.IsAny<string>()))
-            //.Returns();
-
-            _classUnderTest = new PolygonClient(client, new Logger<PolygonClient>(loggerFactory));
+            _testHarness = serviceProvider.GetRequiredService<TestService>();
         }
 
         #region GetAggregateAsync
@@ -58,16 +54,16 @@ namespace MarketDataProvider.Clients.UnitTests
             var request = GivenValidPolygonAggregateRequest();
             var json = GivenValidPolygonAggregateResponse();
 
-            _handler.Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(json)
-                });
+            //_handler.Protected()
+            //    .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            //    .ReturnsAsync(new HttpResponseMessage
+            //    {
+            //        StatusCode = HttpStatusCode.OK,
+            //        Content = new StringContent(json)
+            //    });
 
             // Act
-            var response = await _classUnderTest.GetAggregatesAsync(request);
+            var response = await _testHarness.PolygonClient.GetAggregatesAsync(request);
 
             // Assert
             response.Should().NotBeNull();
@@ -444,11 +440,11 @@ namespace MarketDataProvider.Clients.UnitTests
         {
             var request = new PolygonAggregateRequest
             {
-                Ticker = "META",
+                Ticker = "SPY",
                 Multiplier = 1,
                 Timespan = "minute",
-                From = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString(),
-                To = DateTimeOffset.Now.AddDays(1).ToUnixTimeMilliseconds().ToString(),
+                From = DateTimeOffset.Now.AddDays(-1).ToUnixTimeMilliseconds().ToString(),
+                To = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString(),
             };
 
             return request;
