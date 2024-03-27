@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.AutoMock;
 using Moq.Protected;
+using Polygon.Client;
 using Polygon.Client.Interfaces;
 using Polygon.Client.Models;
 using Polygon.Client.Requests;
