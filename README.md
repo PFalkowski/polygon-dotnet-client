@@ -11,17 +11,26 @@ You can manage your API keys on the [Dashboard](https://polygon.io/dashboard/api
 
 ## Setup
 
-#### With Dependency Injection
-Using the API key that was generated for you earlier, you can create a Polygon client in the following ways.
+Install the [Polygon.Client](http://nuget.org/packages/polygon.client) NuGet package 
 
-```c#
-services.AddPolygonClient("API KEY GOES HERE");
-```
+Package Manager `PM > Install-Package Polygon.Client`
+
+Using the API key that was generated for you earlier, you can create a Polygon client in the following ways.
 
 #### Without Dependency Injection
 
 ```c#
 using var client = new PolygonClient("API KEY GOES HERE");
+```
+
+#### With Dependency Injection
+
+Install the [Polygon.Client.Dependency](http://nuget.org/packages/polygon.client.dependencyinjection) NuGet package.
+
+Package Manager `PM > Install-Package Polygon.Client.DependencyInjection`
+
+```c#
+services.AddPolygonClient("API KEY GOES HERE");
 ```
 
 ## Usage
@@ -39,7 +48,7 @@ public class SomeClass
 	public async Task<PolygonAggregateResponse> DoSomething()
 	{
         // This will get all of the 1-minute bars for 2024-04-20
-        
+
         var request = new PolygonAggregatesRequest
         {
             Ticker = "SPY",
