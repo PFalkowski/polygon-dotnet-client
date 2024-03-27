@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{12249F33
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polygon.Client.UnitTests", "Polygon.Client.UnitTests\Polygon.Client.UnitTests.csproj", "{B9BBBB61-DB4F-4527-AA25-291F739F570A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polygon.Client.DependencyInjection", "Polygon.Client.DependencyInjection\Polygon.Client.DependencyInjection.csproj", "{4A04156B-DDE7-46E6-9AFD-16E77B26A64C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{B9BBBB61-DB4F-4527-AA25-291F739F570A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9BBBB61-DB4F-4527-AA25-291F739F570A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9BBBB61-DB4F-4527-AA25-291F739F570A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A04156B-DDE7-46E6-9AFD-16E77B26A64C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A04156B-DDE7-46E6-9AFD-16E77B26A64C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A04156B-DDE7-46E6-9AFD-16E77B26A64C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A04156B-DDE7-46E6-9AFD-16E77B26A64C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
