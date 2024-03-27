@@ -21,26 +21,29 @@
 
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
-
-  <ItemGroup>
-	<PackageReference Include="Polygon.Client" Version="1.3.0-preview.1" />
-  </ItemGroup>
 	
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
+	<PackageReference Include="Polygon.Client" Version="1.3.0-preview.2" />
 	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+	<PackageReference Include="Polygon.Client" Version="1.3.0-preview.2" />
 	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+	<PackageReference Include="Polygon.Client" Version="1.3.0-preview.2" />
 	<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
   </ItemGroup>
 	
   <ItemGroup>
 	<None Include="../README.md" Pack="true" PackagePath="/" />
 	<None Include="../docs/polygon_icon.png" Pack="true" PackagePath="/" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\Polygon.Client\Polygon.Client.csproj" />
   </ItemGroup>
 	
   
