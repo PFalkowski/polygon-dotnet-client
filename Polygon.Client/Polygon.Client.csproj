@@ -3,7 +3,7 @@
   <PropertyGroup>
 	<TargetFrameworks>netstandard2.1;net6.0;net8.0</TargetFrameworks>
 	<PackageId>Polygon.Client</PackageId>
-	<Version>1.3.0-preview.3</Version>
+	<Version>1.3.0-preview.4</Version>
 	<Authors>Robert Witzlib</Authors>
 	<Description>
 		.NET client for getting stocks, crypto, forex, and indices data from Polygon.io API.
@@ -17,24 +17,24 @@
 	<RepositoryType>git</RepositoryType>
 	<PackageTags>Polygon Polygon.io Client Stocks API</PackageTags>
 
-	<PackageReleaseNotes>Change constructors to allow dependency injection</PackageReleaseNotes>
+	<PackageReleaseNotes>Change request/response contracts and constructors to allow dependency injection</PackageReleaseNotes>
 
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
-    <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
-    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.0" />
+    <PackageReference Include="System.Text.Json" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageReference Include="System.Text.Json" Version="6.0.9" />
+    <PackageReference Include="System.Text.Json" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.3" />
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

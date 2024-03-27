@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Polygon.Client.Interfaces;
 using Polygon.Client.Models;
@@ -19,17 +20,11 @@ namespace Polygon.Client
         private readonly HttpClient _client;
         private readonly ILogger<PolygonClient> _logger;
 
-        public PolygonClient(HttpClient client, ILogger<PolygonClient> logger)
+        [ActivatorUtilitiesConstructor]
+        public PolygonClient(HttpClient client, ILogger<PolygonClient> logger) 
         {
             _client = client;
             _logger = logger;
-        }
-        
-        public PolygonClient(HttpClient client)
-        {
-            _client = client;
-            var loggerFactory = new LoggerFactory();
-            _logger = loggerFactory.CreateLogger<PolygonClient>();
         }
 
         public PolygonClient(string bearerToken)
