@@ -12,7 +12,15 @@ namespace Polygon.Client.DependencyInjection
             services.AddHttpClient<IPolygonClient, PolygonClient>(client =>
             {
                 client.BaseAddress = new Uri("https://api.polygon.io");
-                client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(bearerToken);
+
+                if (bearerToken.StartsWith("Bearer "))
+                {
+                    client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(bearerToken);
+                }
+                else
+                {
+                    client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse($"Bearer {bearerToken}");
+                }
             });
 
             return services;
