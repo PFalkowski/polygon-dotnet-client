@@ -1,29 +1,23 @@
-﻿using AutoFixture;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using Moq.AutoMock;
 using Moq.Protected;
 using Polygon.Client.DependencyInjection;
 using Polygon.Client.Models;
 using Polygon.Client.Requests;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Reflection.Metadata;
 
 namespace Polygon.Client.UnitTests
 {
     public class GetAggregatesUnitTests
     {
-        private readonly Fixture _fixture;
-        private readonly AutoMocker _autoMocker;
         private readonly TestService _testHarness;
 
         public GetAggregatesUnitTests()
         {
-            _fixture = new Fixture();
-            _autoMocker = new AutoMocker();
+            Environment.SetEnvironmentVariable("POLYGON_TOKEN", "");
 
             var serviceProvider = new ServiceCollection()
                 .AddPolygonClient($"Bearer {Environment.GetEnvironmentVariable("POLYGON_TOKEN")}")

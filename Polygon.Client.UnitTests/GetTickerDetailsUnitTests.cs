@@ -18,6 +18,8 @@ namespace Polygon.Client.UnitTests
         {
             _handler = new Mock<HttpMessageHandler>();
 
+            Environment.SetEnvironmentVariable("POLYGON_TOKEN", "");
+
             var serviceProvider = new ServiceCollection()
                 .AddPolygonClient($"Bearer {Environment.GetEnvironmentVariable("POLYGON_TOKEN")}")
                 .AddSingleton<TestService>()
@@ -79,7 +81,7 @@ namespace Polygon.Client.UnitTests
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
-                    StatusCode = HttpStatusCode.BadRequest,
+                    StatusCode = HttpStatusCode.OK,
                     Content = new StringContent("asdf")
                 });
 
