@@ -23,8 +23,6 @@ namespace Polygon.Client.UnitTests
             _fixture = new Fixture();
             _handler = new Mock<HttpMessageHandler>();
 
-            Environment.SetEnvironmentVariable("POLYGON_TOKEN", "");
-
             var serviceProvider = new ServiceCollection()
                 .AddPolygonClient($"Bearer {Environment.GetEnvironmentVariable("POLYGON_TOKEN")}")
                 .AddSingleton<TestService>()
