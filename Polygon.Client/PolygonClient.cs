@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,15 +39,17 @@ namespace Polygon.Client
             _logger = loggerFactory.CreateLogger<PolygonClient>();
         }
 
-        public async Task<PolygonAggregateResponse> GetAggregatesAsync(PolygonAggregateRequest request)
+        public async Task<PolygonAggregateResponse> GetAggregates(PolygonAggregateRequest request)
         {
             if (request is null 
                 || request.Ticker is null 
                 || request.Multiplier is 0
                 || request.Timespan is null 
+                || request.From is null
+                || request.To is null
                 || request.From.CompareTo(request.To) > 0)
             {
-                return GenerateErrorResponse(request.Ticker ?? null, HttpStatusCode.BadRequest);
+                return GenerateAggregatesErrorResponse(request.Ticker ?? null, HttpStatusCode.BadRequest);
             }
 
             try
@@ -56,12 +59,13 @@ namespace Polygon.Client
 
                 var response = await _client.GetAsync(url);
 
+                var json = await response.Content.ReadAsStringAsync();
+
                 if (!response.IsSuccessStatusCode)
                 {
-                    return GenerateErrorResponse(request.Ticker, HttpStatusCode.BadRequest);
+                    return GenerateAggregatesErrorResponse(request.Ticker, response.StatusCode);
                 }
 
-                var json = await response.Content.ReadAsStringAsync();
                 var polygonAggregateResponse = JsonSerializer.Deserialize<PolygonAggregateResponse>(json);
 
                 return polygonAggregateResponse;
@@ -69,15 +73,15 @@ namespace Polygon.Client
             catch (Exception ex)
             {
                 _logger.LogError($"Error getting aggregate data from Polygon API: {ex.Message}");
-                return GenerateErrorResponse(request.Ticker, HttpStatusCode.InternalServerError);
+                return GenerateAggregatesErrorResponse(request.Ticker, HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<PolygonTickerDetailsResponse> GetTickerDetailsAsync(string ticker, DateTime? date = null)
+        public async Task<PolygonTickerDetailsResponse> GetTickerDetails(string ticker, DateTime? date = null)
         {
             if (ticker is null)
             {
-                return null;
+                return GenerateTickerDetailsErrorResponse(HttpStatusCode.BadRequest);
             }
 
             try
@@ -93,7 +97,7 @@ namespace Polygon.Client
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return null;
+                    return GenerateTickerDetailsErrorResponse(response.StatusCode);
                 }
 
                 var json = await response.Content.ReadAsStringAsync();
@@ -104,11 +108,11 @@ namespace Polygon.Client
             catch (Exception ex)
             {
                 _logger.LogError($"Error getting ticker details from Polygon API: {ex.Message}");
-                return null;
+                return GenerateTickerDetailsErrorResponse(HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<PolygonGetTickersResponse> GetTickersAsync(PolygonGetTickersRequest request)
+        public async Task<PolygonGetTickersResponse> GetTickers(PolygonGetTickersRequest request)
         {
             try
             {
@@ -117,7 +121,7 @@ namespace Polygon.Client
                     $"?ticker={request.Ticker}&type={request.Type}&market={request.Market}" +
                     $"&exchange={request.Exchange}&cusip={request.Cusip}&cik={request.Cik}" +
                     $"&date={request.Date}&saerch={request.Search}&active={request.Active}" +
-                    $"&order={request.Order}&limit={request.Limit}&sort={request.Sort}";
+                    $"&order={request.Order}&sort={request.Sort}";
 
                 while (tickerUrl != null)
                 {
@@ -125,56 +129,98 @@ namespace Polygon.Client
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        break;
+                        if (tickerList.Any())
+                        {
+                            break;
+                        }
+
+                        return GenerateGetTickersErrorResponse(response.StatusCode);
                     }
 
                     var content = await response.Content.ReadAsStringAsync();
+
                     var scanResponse = JsonSerializer.Deserialize<PolygonGetTickersResponse>(content);
                     tickerList.AddRange(scanResponse.Results);
-
-                    if (tickerList.Count >= request.Limit)
-                    {
-                        return new PolygonGetTickersResponse
-                        {
-                            Results = tickerList.Take(request.Limit),
-                            Status = HttpStatusCode.OK
-                        };
-                    }
 
                     tickerUrl = scanResponse.NextUrl;
                 }
 
                 return new PolygonGetTickersResponse
                 {
-                    Status = HttpStatusCode.OK,
+                    Status = HttpStatusCode.OK.ToString(),
                     Results = tickerList
                 };
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error getting tickers from Polygon API: {ex.Message}");
-                return new PolygonGetTickersResponse
-                {
-                    Status = HttpStatusCode.InternalServerError,
-                    Results = Enumerable.Empty<TickerDetails>()
-                };
+                return GenerateGetTickersErrorResponse(HttpStatusCode.InternalServerError);
             }
         }
 
-        public Task<PolygonSnapshotResponse> GetAllTickersSnapshot(string tickers, bool includeOtc)
+        public async Task<PolygonSnapshotResponse> GetAllTickersSnapshot(string tickers, bool includeOtc = false)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var url = $"/v2/snapshot/locale/us/markets/stocks/tickers?tickers={tickers}&include_otc={includeOtc}";
+
+                var response = await _client.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return GenerateSnapshotErrorResponse(response.StatusCode);
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                var snapshotResponse = JsonSerializer.Deserialize<PolygonSnapshotResponse>(json);
+
+                return snapshotResponse;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error getting tickers from Polygon API: {ex.Message}");
+                return GenerateSnapshotErrorResponse(HttpStatusCode.InternalServerError);
+            }
         }
 
         #region Private Methods
-        private static PolygonAggregateResponse GenerateErrorResponse(string ticker, HttpStatusCode status)
+        private static PolygonAggregateResponse GenerateAggregatesErrorResponse(string ticker, HttpStatusCode status)
         {
             return new PolygonAggregateResponse
             {
                 Ticker = ticker,
-                Status = status,
+                Status = status.ToString(),
                 Results = Enumerable.Empty<Bar>(),
                 ResultsCount = 0
+            };
+        }
+
+        private static PolygonTickerDetailsResponse GenerateTickerDetailsErrorResponse(HttpStatusCode status)
+        {
+            return new PolygonTickerDetailsResponse
+            {
+                Status = status.ToString(),
+                Count = 0,
+                TickerDetails = null
+            };
+        }
+
+        private static PolygonGetTickersResponse GenerateGetTickersErrorResponse(HttpStatusCode status)
+        {
+            return new PolygonGetTickersResponse
+            {
+                Status = status.ToString(),
+                Results = Enumerable.Empty<TickerDetails>()
+            };
+        }
+
+        private static PolygonSnapshotResponse GenerateSnapshotErrorResponse(HttpStatusCode status)
+        {
+            return new PolygonSnapshotResponse
+            {
+                Status = status.ToString(),
+                Tickers = Enumerable.Empty<Snapshot>()
             };
         }
         #endregion
