@@ -46,7 +46,7 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '2.1.x'
-      - run: dotnet pack
+      - run: dotnet pack Polygon.Client.sln
 
   # publish_prerelease:
   #   runs-on: ubuntu-latest
