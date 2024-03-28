@@ -60,14 +60,33 @@ jobs:
           filters: |
             clients:
               - './Polygon.Client/**'
+            dependencyinjection:
+              - './Polygon.Client.DependencyInjection/**'
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '2.1.x'
-      - if: steps.filter.outputs.clients == 'true'
-        run: dotnet nuget push
-      - if: steps.filter.outputs.clients != 'true'
+
+      - name: Publish Client
+        if: steps.filter.outputs.clients == 'true'
+        run: |
+          dotnet nuget push ./Polygon.Client/bin/Release/*.nupkg  \
+            -k $NUGET_AUTH_TOKEN \
+            -s https://api.nuget.org/v3/index.json
+      - name: Skip Publish Client
+        if: steps.filter.outputs.clients != 'true'
         run: echo "No Polygon.Client changes - Skipping Publish."
     
+      - name: Publish DependencyInjection
+        if: steps.filter.outputs.clients == 'true'
+        run: dotnet nuget push ./Polygon.Client.DependencyInjection/bin/Release/*.nupkg \
+          -k $NUGET_AUTH_TOKEN \
+          -s https://api.nuget.org/v3/index.json
+      - name: Skip Publish DependencyInjection
+        if: steps.filter.outputs.clients != 'true'
+        run: echo "No Polygon.Client.DependencyInjection changes - Skipping Publish."
+    
+    env:
+      NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
 
   # publish_release:
   #   runs-on: ubuntu-latest
