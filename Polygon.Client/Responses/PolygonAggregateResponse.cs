@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using System.Text.Json.Serialization;
 using Polygon.Client.Models;
 
@@ -43,7 +42,7 @@ namespace Polygon.Client.Responses
         /// The status of this request's response.
         /// </summary>
         [JsonPropertyName("status")]
-        public HttpStatusCode Status { get; set; }
+        public string Status { get; set; }
 
         [JsonPropertyName("results")]
         public IEnumerable<Bar> Results { get; set; }

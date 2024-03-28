@@ -30,6 +30,6 @@ namespace Polygon.Client.Responses
         /// The status of this request's response.
         /// </summary>
         [JsonPropertyName("status")]
-        public HttpStatusCode Status { get; set; }
+        public string Status { get; set; }
     }
 }

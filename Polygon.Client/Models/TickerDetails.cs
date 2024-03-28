@@ -34,7 +34,7 @@ namespace Polygon.Client.Models
         /// The most recent close price of the ticker multiplied by weighted outstanding shares.
         /// </summary>
         [JsonPropertyName("market_cap")]
-        public int MarketCap { get; set; }
+        public double MarketCap { get; set; }
 
         /// <summary>
         /// The shares outstanding calculated assuming all shares of other 
