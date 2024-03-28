@@ -43,10 +43,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '2.1.x'
-      - run: dotnet pack Polygon.Client.sln
+      - run: dotnet pack
 
   # publish_prerelease:
   #   runs-on: ubuntu-latest
