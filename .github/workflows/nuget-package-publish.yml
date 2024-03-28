@@ -1,7 +1,6 @@
 name: Nuget Package Publish
-
+run-name: ${{ github.actor }} is running Nuget Publish
 on: [push]
-
 jobs:
   build:
     runs-on: ubuntu-latest
