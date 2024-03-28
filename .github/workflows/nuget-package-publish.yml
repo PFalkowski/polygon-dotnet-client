@@ -1,0 +1,36 @@
+name: Nuget Package Publish
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+            dotnet: ['2.1.x', '6.0.x', '8.0.x']
+    name: Dotnet ${{ matrix.dotnet }} build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+      - run: dotnet build
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+            dotnet: ['2.1.x', '6.0.x', '8.0.x']
+    name: Dotnet ${{ matrix.dotnet }} test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+      - run: dotnet test
+
+  publish_prerelease:
+    runs-on: ubuntu-latest
+
+  publish_release:
+    runs-on: ubuntu-latest
