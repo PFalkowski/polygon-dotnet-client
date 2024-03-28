@@ -30,7 +30,7 @@ namespace Polygon.Client.Models
         /// <summary>
         /// The exchange symbol that this item is traded under.
         /// </summary>
-        [JsonPropertyName("prevDay")]
+        [JsonPropertyName("ticker")]
         public string Ticker { get; set; }
 
         /// <summary>

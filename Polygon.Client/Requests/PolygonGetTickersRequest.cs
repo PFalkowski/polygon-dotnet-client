@@ -80,12 +80,6 @@ namespace Polygon.Client.Requests
         public string Order { get; set; } = "asc";
 
         /// <summary>
-        /// Limit the number of results returned, default is 100 and max is 1000.
-        /// </summary>
-        [JsonPropertyName("limit")]
-        public int Limit { get; set; } = 100;
-
-        /// <summary>
         /// Sort field used for ordering.
         /// </summary>
         [JsonPropertyName("sort")]

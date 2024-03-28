@@ -16,7 +16,7 @@ namespace Polygon.Client.Models
         /// <summary>
         /// A link to this ticker's company's logo.
         /// </summary>
-        [JsonPropertyName("icon_url")]
+        [JsonPropertyName("logo_url")]
         public string LogoUrl { get; set; }
     }
 }
