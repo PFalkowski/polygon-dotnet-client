@@ -39,7 +39,7 @@ jobs:
       - run: |
           dotnet test
 
-  package:
+  publish_clients_prerelease:
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -47,13 +47,6 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '2.1.x'
-      - run: dotnet pack
-
-  publish_clients_prerelease:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -65,6 +58,9 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '2.1.x'
+
+      - name: Package
+        run: dotnet pack
 
       - name: Publish Client
         if: steps.filter.outputs.clients == 'true'
