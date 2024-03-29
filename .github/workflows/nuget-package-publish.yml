@@ -75,10 +75,11 @@ jobs:
     
       - name: Publish DependencyInjection
         if: steps.filter.outputs.clients == 'true'
-        run: dotnet nuget push ./Polygon.Client.DependencyInjection/bin/Release/*.nupkg \
-          -k $NUGET_AUTH_TOKEN \
-          -s https://api.nuget.org/v3/index.json \
-          --skip-duplicate
+        run: |
+          dotnet nuget push ./Polygon.Client.DependencyInjection/bin/Release/*.nupkg \
+            -k $NUGET_AUTH_TOKEN \
+            -s https://api.nuget.org/v3/index.json \
+            --skip-duplicate
       - name: Skip Publish DependencyInjection
         if: steps.filter.outputs.clients != 'true'
         run: echo "No Polygon.Client.DependencyInjection changes - Skipping Publish."
