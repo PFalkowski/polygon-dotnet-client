@@ -17,15 +17,20 @@ using System.Text.Json.Serialization;
 namespace Polygon.Client
 {
     /// <summary>
-     /// This class is used to register the input event and return type for the FunctionHandler method with the System.Text.Json source generator.
-     /// There must be a JsonSerializable attribute for each type used as the input and return type or a runtime error will occur 
-     /// from the JSON serializer unable to find the serialization information for unknown types.
-     /// </summary>
-     ///
-    [JsonSourceGenerationOptions(UseStringEnumConverter = true, Converters = [typeof(JsonStringEnumConverter)])]
+    /// This class is used to register the input event and return type for the FunctionHandler method with the System.Text.Json source generator.
+    /// There must be a JsonSerializable attribute for each type used as the input and return type or a runtime error will occur 
+    /// from the JSON serializer unable to find the serialization information for unknown types.
+    /// </summary>
+    ///
+    [JsonSourceGenerationOptions(UseStringEnumConverter = true, Converters = [typeof(JsonStringEnumConverter<HttpStatusCode>)])]
     [JsonSerializable(typeof(PolygonAggregateRequest))]
+    [JsonSerializable(typeof(PolygonGetTickersRequest))]
+    [JsonSerializable(typeof(PolygonTickerDetailsResponse))]
     [JsonSerializable(typeof(PolygonAggregateResponse))]
-    [JsonSerializable(typeof(Bar))]
+    [JsonSerializable(typeof(PolygonGetTickersResponse))]
+    [JsonSerializable(typeof(PolygonTickerDetailsResponse))]
+    [JsonSerializable(typeof(PolygonSnapshotResponse))]
+    [JsonSerializable(typeof(PolygonWebsocketAggregateResponse))]
     public partial class PolygonJsonSerializerContext : JsonSerializerContext
     {
         // By using this partial class derived from JsonSerializerContext, we can generate reflection free JSON Serializer code at compile time
