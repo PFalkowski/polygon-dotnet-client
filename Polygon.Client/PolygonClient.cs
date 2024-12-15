@@ -4,8 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,13 +11,37 @@ using Polygon.Client.Interfaces;
 using Polygon.Client.Models;
 using Polygon.Client.Requests;
 using Polygon.Client.Responses;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Polygon.Client
 {
+    /// <summary>
+     /// This class is used to register the input event and return type for the FunctionHandler method with the System.Text.Json source generator.
+     /// There must be a JsonSerializable attribute for each type used as the input and return type or a runtime error will occur 
+     /// from the JSON serializer unable to find the serialization information for unknown types.
+     /// </summary>
+     ///
+    [JsonSourceGenerationOptions(UseStringEnumConverter = true, Converters = [typeof(JsonStringEnumConverter)])]
+    [JsonSerializable(typeof(PolygonAggregateRequest))]
+    [JsonSerializable(typeof(PolygonAggregateResponse))]
+    [JsonSerializable(typeof(Bar))]
+    public partial class PolygonJsonSerializerContext : JsonSerializerContext
+    {
+        // By using this partial class derived from JsonSerializerContext, we can generate reflection free JSON Serializer code at compile time
+        // which can deserialize our class and properties. However, we must attribute this class to tell it what types to generate serialization code for.
+        // See https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-source-generation
+    }
     public class PolygonClient : IPolygonClient
     {
         private readonly HttpClient _client;
         private readonly ILogger<PolygonClient> _logger;
+
+        private readonly JsonSerializerOptions _options = new()
+        {
+            PropertyNameCaseInsensitive = true,
+            TypeInfoResolver = PolygonJsonSerializerContext.Default
+        };
 
         [ActivatorUtilitiesConstructor]
         public PolygonClient(HttpClient client, ILogger<PolygonClient> logger) 
@@ -66,7 +88,7 @@ namespace Polygon.Client
                     return GenerateAggregatesErrorResponse(request.Ticker, response.StatusCode);
                 }
 
-                var polygonAggregateResponse = JsonSerializer.Deserialize<PolygonAggregateResponse>(json);
+                var polygonAggregateResponse = JsonSerializer.Deserialize<PolygonAggregateResponse>(json, _options);
 
                 return polygonAggregateResponse;
             }
@@ -101,7 +123,7 @@ namespace Polygon.Client
                 }
 
                 var json = await response.Content.ReadAsStringAsync();
-                var tickerDetailsResponse = JsonSerializer.Deserialize<PolygonTickerDetailsResponse>(json);
+                var tickerDetailsResponse = JsonSerializer.Deserialize<PolygonTickerDetailsResponse>(json, _options);
 
                 return tickerDetailsResponse;
             }
@@ -139,7 +161,7 @@ namespace Polygon.Client
 
                     var content = await response.Content.ReadAsStringAsync();
 
-                    var scanResponse = JsonSerializer.Deserialize<PolygonGetTickersResponse>(content);
+                    var scanResponse = JsonSerializer.Deserialize<PolygonGetTickersResponse>(content, _options);
                     tickerList.AddRange(scanResponse.Results);
 
                     tickerUrl = scanResponse.NextUrl;
@@ -173,7 +195,7 @@ namespace Polygon.Client
 
                 var json = await response.Content.ReadAsStringAsync();
 
-                var snapshotResponse = JsonSerializer.Deserialize<PolygonSnapshotResponse>(json);
+                var snapshotResponse = JsonSerializer.Deserialize<PolygonSnapshotResponse>(json, _options);
 
                 return snapshotResponse;
             }
@@ -191,7 +213,7 @@ namespace Polygon.Client
             {
                 Ticker = ticker,
                 Status = status.ToString(),
-                Results = Enumerable.Empty<Bar>(),
+                Results = [],
                 ResultsCount = 0
             };
         }
@@ -211,7 +233,7 @@ namespace Polygon.Client
             return new PolygonGetTickersResponse
             {
                 Status = status.ToString(),
-                Results = Enumerable.Empty<TickerDetails>()
+                Results = []
             };
         }
 
@@ -220,7 +242,7 @@ namespace Polygon.Client
             return new PolygonSnapshotResponse
             {
                 Status = status.ToString(),
-                Tickers = Enumerable.Empty<Snapshot>()
+                Tickers = []
             };
         }
         #endregion
