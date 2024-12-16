@@ -31,6 +31,26 @@ public class PolygonClient : IPolygonClient
         _logger = logger;
     }
 
+    public PolygonClient(string bearerToken)
+    {
+        _client = new HttpClient
+        {
+            BaseAddress = new Uri("https://api.polygon.io"),
+        };
+
+        if (bearerToken.StartsWith("Bearer "))
+        {
+            _client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(bearerToken);
+        }
+        else
+        {
+            _client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse($"Bearer {bearerToken}");
+        }
+
+        var loggerFactory = new LoggerFactory();
+        _logger = loggerFactory.CreateLogger<PolygonClient>();
+    }
+
     public PolygonClient(string bearerToken, JsonSerializerOptions options = null)
     {
         _client = new HttpClient

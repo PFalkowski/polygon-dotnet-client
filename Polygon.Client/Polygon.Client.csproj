@@ -3,7 +3,7 @@
   <PropertyGroup>
 	<TargetFrameworks>net8.0</TargetFrameworks>
 	<PackageId>Polygon.Client</PackageId>
-	<Version>1.5.0-preview.3</Version>
+	<Version>2.0</Version>
 	<Authors>Robert Witzlib</Authors>
 	<Description>
 		.NET client for getting stocks, crypto, forex, and indices data from Polygon.io API.
@@ -17,7 +17,9 @@
 	<RepositoryType>git</RepositoryType>
 	<PackageTags>Polygon Polygon.io Client Stocks API</PackageTags>
 
-	<PackageReleaseNotes>Change request/response contracts and constructors to allow dependency injection</PackageReleaseNotes>
+	<PackageReleaseNotes>.NET client for getting stocks, crypto, forex, and indices data from Polygon.io API.
+		Independently developed, this is not an official library and I am not affiliated with Polygon.
+	</PackageReleaseNotes>
 
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>

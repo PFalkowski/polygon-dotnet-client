@@ -31,10 +31,6 @@ using var client = new PolygonClient("API KEY GOES HERE");
 
 #### With Dependency Injection
 
-Install the [Polygon.Client.Dependency](http://nuget.org/packages/polygon.client.dependencyinjection) NuGet package.
-
-Package Manager `PM > Install-Package Polygon.Client.DependencyInjection`
-
 ```c#
 services.AddPolygonClient("API KEY GOES HERE");
 ```
