@@ -14,28 +14,6 @@ using Polygon.Client.Responses;
 using System.Text.Json;
 
 namespace Polygon.Client;
-
-/// <summary>
-/// This class is used to register the input event and return type for the FunctionHandler method with the System.Text.Json source generator.
-/// There must be a JsonSerializable attribute for each type used as the input and return type or a runtime error will occur 
-/// from the JSON serializer unable to find the serialization information for unknown types.
-/// </summary>
-///
-//[JsonSourceGenerationOptions(UseStringEnumConverter = true, Converters = [typeof(JsonStringEnumConverter<HttpStatusCode>)])]
-//[JsonSerializable(typeof(PolygonAggregateRequest))]
-//[JsonSerializable(typeof(PolygonGetTickersRequest))]
-//[JsonSerializable(typeof(TickerDetails))]
-//[JsonSerializable(typeof(PolygonAggregateResponse))]
-//[JsonSerializable(typeof(PolygonGetTickersResponse))]
-//[JsonSerializable(typeof(PolygonTickerDetailsResponse))]
-//[JsonSerializable(typeof(PolygonSnapshotResponse))]
-//[JsonSerializable(typeof(PolygonWebsocketAggregateResponse))]
-//public partial class PolygonJsonSerializerContext : JsonSerializerContext
-//{
-//    // By using this partial class derived from JsonSerializerContext, we can generate reflection free JSON Serializer code at compile time
-//    // which can deserialize our class and properties. However, we must attribute this class to tell it what types to generate serialization code for.
-//    // See https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-source-generation
-//}
 public class PolygonClient : IPolygonClient
 {
     private readonly HttpClient _client;
@@ -43,8 +21,7 @@ public class PolygonClient : IPolygonClient
 
     private readonly JsonSerializerOptions _options = new()
     {
-        PropertyNameCaseInsensitive = true,
-        //TypeInfoResolver = PolygonJsonSerializerContext.Default
+        PropertyNameCaseInsensitive = true
     };
 
     [ActivatorUtilitiesConstructor]
@@ -60,12 +37,21 @@ public class PolygonClient : IPolygonClient
         {
             BaseAddress = new Uri("https://api.polygon.io"),
         };
-        _client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(bearerToken);
+
+        if (bearerToken.StartsWith("Bearer "))
+        {
+            _client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(bearerToken);
+        }
+        else
+        {
+            _client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse($"Bearer {bearerToken}");
+        }
 
         if (options is not null)
         {
             _options = options;
         }
+
         var loggerFactory = new LoggerFactory();
         _logger = loggerFactory.CreateLogger<PolygonClient>();
     }
