@@ -74,6 +74,12 @@ namespace Polygon.Client.Requests
         public bool Active { get; set; } = true;
 
         /// <summary>
+        /// Number of tickers that should be returned.
+        /// </summary>
+        [JsonPropertyName("active")]
+        public int Limit { get; set; } = 1000;
+
+        /// <summary>
         /// Order results based on the sort field.
         /// </summary>
         [JsonPropertyName("order")]
