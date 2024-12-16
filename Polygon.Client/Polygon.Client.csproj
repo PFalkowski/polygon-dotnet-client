@@ -3,7 +3,7 @@
   <PropertyGroup>
 	<TargetFrameworks>net8.0</TargetFrameworks>
 	<PackageId>Polygon.Client</PackageId>
-	<Version>1.5.0-preview.1</Version>
+	<Version>1.5.0-preview.2</Version>
 	<Authors>Robert Witzlib</Authors>
 	<Description>
 		.NET client for getting stocks, crypto, forex, and indices data from Polygon.io API.
@@ -30,10 +30,6 @@
   <ItemGroup>
       <None Include="../README.md" Pack="true" PackagePath="/" />
       <None Include="../docs/polygon_icon.png" Pack="true" PackagePath="/" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Serialization\" />
   </ItemGroup>
 
 </Project>
