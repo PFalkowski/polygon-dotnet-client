@@ -32,7 +32,7 @@ namespace Polygon.Client.UnitTests
 
             if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("POLYGON_TOKEN")))
             {
-                Environment.SetEnvironmentVariable("POLYGON_TOKEN", "l579VMLmo01f1BkAK9kBP8WF0myHGQMK");
+                Environment.SetEnvironmentVariable("POLYGON_TOKEN", "");
             }
 
             var serviceProvider = new ServiceCollection()
