@@ -59,5 +59,7 @@ namespace Polygon.Client.Models
         /// </summary>
         [JsonPropertyName("vw")]
         public float Vwap { get; set; }
+
+        public Bar Clone() => (Bar)MemberwiseClone();
     }
 }
