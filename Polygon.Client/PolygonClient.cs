@@ -46,53 +46,53 @@ public class PolygonClient : IPolygonClient
     }
 
     // TODO: move this to polygon client
-    private static async Task<List<StocksResponse>> ParseStocksResponses(DateTimeOffset date)
-    {
-        List<StocksResponse> responses = [];
-        string gzFilePath = $"./{date:yyyy-MM-dd}.csv.gz"; // Replace with your file path
+    //private static async Task<List<StocksResponse>> ParseStocksResponses(DateTimeOffset date)
+    //{
+    //    List<StocksResponse> responses = [];
+    //    string gzFilePath = $"./{date:yyyy-MM-dd}.csv.gz"; // Replace with your file path
 
-        try
-        {
+    //    try
+    //    {
 
-            string csvContent = await ReadGzFile(gzFilePath);
+    //        string csvContent = await ReadGzFile(gzFilePath);
 
-            string[] lines = csvContent.Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 1; i < lines.Length; i++)
-            {
-                string[] columns = lines[i].Split(',');
+    //        string[] lines = csvContent.Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries);
+    //        for (int i = 1; i < lines.Length; i++)
+    //        {
+    //            string[] columns = lines[i].Split(',');
 
-                if (responses.Count == 0 || responses.Last().Ticker != columns[0])
-                {
-                    responses.Add(new StocksResponse
-                    {
-                        Ticker = columns[0],
-                        Results = []
-                    });
-                }
+    //            if (responses.Count == 0 || responses.Last().Ticker != columns[0])
+    //            {
+    //                responses.Add(new StocksResponse
+    //                {
+    //                    Ticker = columns[0],
+    //                    Results = []
+    //                });
+    //            }
 
-                var bar = new Bar
-                {
-                    Volume = float.Parse(columns[1]),
-                    Open = float.Parse(columns[2]),
-                    Close = float.Parse(columns[3]),
-                    High = float.Parse(columns[4]),
-                    Low = float.Parse(columns[5]),
-                    Timestamp = long.Parse(columns[6]),
-                    TransactionCount = int.Parse(columns[7])
-                };
+    //            var bar = new Bar
+    //            {
+    //                Volume = float.Parse(columns[1]),
+    //                Open = float.Parse(columns[2]),
+    //                Close = float.Parse(columns[3]),
+    //                High = float.Parse(columns[4]),
+    //                Low = float.Parse(columns[5]),
+    //                Timestamp = long.Parse(columns[6]),
+    //                TransactionCount = int.Parse(columns[7])
+    //            };
 
-                bar.Vwap = (bar.High + bar.Low + bar.Close) / 3;
+    //            bar.Vwap = (bar.High + bar.Low + bar.Close) / 3;
 
-                responses.Last().Results.Add(bar);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Oops, something went wrong: {ex.Message}");
-        }
+    //            responses.Last().Results.Add(bar);
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine($"Oops, something went wrong: {ex.Message}");
+    //    }
 
-        return responses;
-    }
+    //    return responses;
+    //}
 
     public PolygonClient(string bearerToken)
     {
