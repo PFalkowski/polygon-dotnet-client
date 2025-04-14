@@ -11,6 +11,8 @@ namespace Polygon.Client.Responses
     [ExcludeFromCodeCoverage]
     public class PolygonSnapshotResponse
     {
+        [JsonPropertyName("request_id")]
+        public string RequestId { get; set; }
         /// <summary>
         /// The total number of results for this request.
         /// </summary>

@@ -12,6 +12,9 @@ using Polygon.Client.Models;
 using Polygon.Client.Requests;
 using Polygon.Client.Responses;
 using System.Text.Json;
+using System.IO.Compression;
+using System.IO;
+using System.Text;
 
 namespace Polygon.Client;
 public class PolygonClient : IPolygonClient
@@ -29,6 +32,66 @@ public class PolygonClient : IPolygonClient
     {
         _client = client;
         _logger = logger;
+    }
+
+    // TODO: move this to polygon client
+    static async Task<string> ReadGzFile(string filePath)
+    {
+        using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+        using (GZipStream gzipStream = new GZipStream(fileStream, CompressionMode.Decompress))
+        using (StreamReader reader = new StreamReader(gzipStream, Encoding.UTF8))
+        {
+            return await reader.ReadToEndAsync();
+        }
+    }
+
+    // TODO: move this to polygon client
+    private static async Task<List<StocksResponse>> ParseStocksResponses(DateTimeOffset date)
+    {
+        List<StocksResponse> responses = [];
+        string gzFilePath = $"./{date:yyyy-MM-dd}.csv.gz"; // Replace with your file path
+
+        try
+        {
+
+            string csvContent = await ReadGzFile(gzFilePath);
+
+            string[] lines = csvContent.Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 1; i < lines.Length; i++)
+            {
+                string[] columns = lines[i].Split(',');
+
+                if (responses.Count == 0 || responses.Last().Ticker != columns[0])
+                {
+                    responses.Add(new StocksResponse
+                    {
+                        Ticker = columns[0],
+                        Results = []
+                    });
+                }
+
+                var bar = new Bar
+                {
+                    Volume = float.Parse(columns[1]),
+                    Open = float.Parse(columns[2]),
+                    Close = float.Parse(columns[3]),
+                    High = float.Parse(columns[4]),
+                    Low = float.Parse(columns[5]),
+                    Timestamp = long.Parse(columns[6]),
+                    TransactionCount = int.Parse(columns[7])
+                };
+
+                bar.Vwap = (bar.High + bar.Low + bar.Close) / 3;
+
+                responses.Last().Results.Add(bar);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Oops, something went wrong: {ex.Message}");
+        }
+
+        return responses;
     }
 
     public PolygonClient(string bearerToken)
