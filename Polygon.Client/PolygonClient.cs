@@ -284,7 +284,7 @@ public class PolygonClient : IPolygonClient
         }
     }
 
-    public async Task<PolygonDailyMarketSummaryResponse> GetDailyMarketSummary(DateTime? date = null)
+    public async Task<PolygonDailyMarketSummaryResponse> GetDailyMarketSummary(DateTime? date = null, bool includeOtc = false, bool adjusted = true)
     {
         try
         {
@@ -294,6 +294,8 @@ public class PolygonClient : IPolygonClient
             {
                 url += $"/{date:yyyy-MM-dd}";
             }
+
+            url += $"?include_otc={includeOtc}&adjusted={adjusted}";
 
             var response = await _client.GetAsync(url);
 

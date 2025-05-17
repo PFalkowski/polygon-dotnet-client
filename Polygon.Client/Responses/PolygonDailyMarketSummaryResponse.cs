@@ -9,4 +9,4 @@ namespace Polygon.Client.Responses
         [JsonPropertyName("results")]
         public List<BarWithTicker> Results { get; set; } = new();
     }
-} 
+}
