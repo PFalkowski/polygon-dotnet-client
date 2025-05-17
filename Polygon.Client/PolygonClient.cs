@@ -284,6 +284,36 @@ public class PolygonClient : IPolygonClient
         }
     }
 
+    public async Task<PolygonDailyMarketSummaryResponse> GetDailyMarketSummary(DateTime? date = null)
+    {
+        try
+        {
+            var url = "/v2/aggs/grouped/locale/us/market/stocks";
+            
+            if (date != null)
+            {
+                url += $"/{date:yyyy-MM-dd}";
+            }
+
+            var response = await _client.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return GenerateDailyMarketSummaryErrorResponse(response.StatusCode);
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var marketSummaryResponse = JsonSerializer.Deserialize<PolygonDailyMarketSummaryResponse>(json, _options);
+
+            return marketSummaryResponse;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error getting daily market summary from Polygon API: {ex.Message}");
+            return GenerateDailyMarketSummaryErrorResponse(HttpStatusCode.InternalServerError);
+        }
+    }
+
     #region Private Methods
     private static PolygonAggregateResponse GenerateAggregatesErrorResponse(string ticker, HttpStatusCode status)
     {
@@ -321,6 +351,18 @@ public class PolygonClient : IPolygonClient
         {
             Status = status.ToString(),
             Tickers = []
+        };
+    }
+
+    private static PolygonDailyMarketSummaryResponse GenerateDailyMarketSummaryErrorResponse(HttpStatusCode status)
+    {
+        return new PolygonDailyMarketSummaryResponse
+        {
+            Status = status.ToString(),
+            Results = new List<BarWithTicker>(),
+            QueryCount = 0,
+            ResultsCount = 0,
+            Count = 0
         };
     }
     #endregion
