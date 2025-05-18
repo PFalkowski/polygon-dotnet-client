@@ -24,6 +24,6 @@ namespace Polygon.Client.DependencyInjection
             });
 
             return services;
-        }
+        }   
     }
 }
