@@ -51,7 +51,7 @@ namespace Polygon.Client.UnitTests
         public async Task GetDailyMarketSummary_With_Future_Date_Returns_Error_Response()
         {
             // Arrange
-            var futureDate = DateTime.Now.AddDays(1);
+            var futureDate = DateTime.UtcNow.AddDays(10);
 
             // Act
             var response = await _testHarness.PolygonClient.GetDailyMarketSummary(futureDate);
