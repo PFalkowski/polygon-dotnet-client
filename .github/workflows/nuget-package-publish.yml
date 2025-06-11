@@ -2,7 +2,10 @@ name: Nuget Package Publish
 
 run-name: ${{ github.actor }} is running Nuget Publish
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 env:
   POLYGON_TOKEN: ${{ secrets.POLYGON_TOKEN }}
