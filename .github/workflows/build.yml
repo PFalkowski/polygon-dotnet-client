@@ -1,6 +1,6 @@
 name: Build & Test
 
-run-name: ${{ github.actor }} is running Nuget Publish
+run-name: ${{ github.actor }} is running Build & Test
 
 on:
   pull_request:
